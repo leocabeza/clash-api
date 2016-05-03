@@ -22,7 +22,28 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+You'll need to generate an access token in Clash of Clans developer page at:
+[https://developer.clashofclans.com](https://developer.clashofclans.com)
+
+With your access token, retrieve a client instance with it.
+
+`client = Clashinator::Client.new('YOUR TOKEN')`
+
+To retrieve objects(for now JSON data), you can perform this actions, defined in the Clash of Clans API docs:
+
+```ruby
+client.find_clan({name: 'onehive', minMembers: 25})
+
+client.get_clan_info({clan_tag: '#2U2CYPQ8'})
+
+client.list_clan_members({clan_tag: '#2U2CYPQ8'})
+
+client.list_locations()
+
+client.get_location_info({location_id: 32000254})
+
+client.get_ranking_for_location({location_id: 32000254, ranking_id: 'clans'})
+```
 
 ## Development
 
@@ -32,7 +53,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/clashinator. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/leocabeza/clashinator. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
