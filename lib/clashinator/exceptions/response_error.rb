@@ -7,14 +7,14 @@ module Clashinator
         @response = response
       end
 
-      #def to_s
-      #  super +
-      #    format(' (%s)', data.map { |k, v| %(#{k}: "#{v}") }.join(', '))
-      #end
+      def to_s
+        super +
+          format(' (%s)', data.map { |k, v| %(#{k}: "#{v}") }.join(', '))
+      end
 
-      #def error_code
-      #  data[:error_code] || data['error_code']
-      #end
+      def error_code
+        data[:error_code] || data['error_code']
+      end
 
       private
 

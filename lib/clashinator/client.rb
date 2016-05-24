@@ -5,9 +5,15 @@ module Clashinator
       find_clan: '/v1/clans',
       get_clan_info: '/v1/clans/{clan_tag}',
       list_clan_members: '/v1/clans/{clan_tag}/members',
+      list_war_log: '/v1/clans/{clan_tag}/warlog',
       list_locations: '/v1/locations',
       get_location_info: '/v1/locations/{location_id}',
-      get_ranking_for_location: '/v1/locations/{location_id}/rankings/{ranking_id}'
+      get_clan_ranking_for_location: '/v1/locations/{location_id}/rankings/clans',
+      get_player_ranking_for_location: '/v1/locations/{location_id}/rankings/players',
+      list_leagues: '/v1/leagues',
+      get_league: '/v1/leagues/{league_id}',
+      get_league_seasons: '/v1/leagues/{league_id}/seasons',
+      get_league_season_rankings: '/v1/leagues/{league_id}/seasons/{season_id}'
     }
 
     attr_reader :token
@@ -28,9 +34,9 @@ module Clashinator
       connection_params = build_connection_params(method_name, params)
       response = connection.get(
         connection_params[:url],
-        connection_params[:query_params]
+        connection_params[:query_params].empty? ? {} : connection_params[:query_params]
       )
-      if response.status == 200
+      if response.success?
         JSON.parse(response.body.to_json)
       else
         raise Exceptions::ResponseError.new(response),

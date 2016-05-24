@@ -36,11 +36,23 @@ client.get_clan_info({clan_tag: '#2U2CYPQ8'})
 
 client.list_clan_members({clan_tag: '#2U2CYPQ8'})
 
+client.list_war_log({clan_tag: '#2U2CYPQ8'})
+
 client.list_locations()
 
 client.get_location_info({location_id: 32000254})
 
-client.get_ranking_for_location({location_id: 32000254, ranking_id: 'clans'})
+client.get_clan_ranking_for_location({location_id: 32000254})
+
+client.get_player_ranking_for_location({location_id: 32000254})
+
+client.list_leagues()
+
+client.get_league({league_id: 29000022})
+
+client.get_league_seasons({league_id: 29000022})
+
+client.get_league_season_rankings({league_id: 29000022, season_id: '2016-04'})
 ```
 
 ## Development
