@@ -1,10 +1,4 @@
-require 'faraday'
-require 'faraday_middleware'
-
-require "clashinator/version"
-require "clashinator/client.rb"
-require "clashinator/exceptions.rb"
-
-module Clashinator
-  #
+require "httparty"
+Dir[File.dirname(__FILE__) + '/clashinator/*.rb'].each do |file|
+  require file
 end
