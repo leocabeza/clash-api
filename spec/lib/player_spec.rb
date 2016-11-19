@@ -1,0 +1,59 @@
+require_relative '../spec_helper.rb'
+
+describe Clashinator::Player do
+
+  let(:player) { Clashinator::Player.player_info('#QOCRLV90') }
+
+  describe 'when Player class exists' do
+    it 'must have a Base Class parent' do
+      Clashinator::Player.superclass.must_equal Clashinator::Base
+    end
+  end
+
+  describe 'when player_info class method exists' do
+    it 'must include a class method named player_info' do
+      Clashinator::Player.must_respond_to 'player_info'
+    end
+
+    it 'must return an instance of player' do
+      player.must_be_instance_of Clashinator::Player
+    end
+
+    it 'must respond to default attributes' do
+      player.must_respond_to 'tag'
+      player.must_respond_to 'name'
+      player.must_respond_to 'town_hall_level'
+      player.must_respond_to 'exp_level'
+      player.must_respond_to 'trophies'
+      player.must_respond_to 'best_trophies'
+      player.must_respond_to 'war_stars'
+      player.must_respond_to 'attack_wins'
+      player.must_respond_to 'defense_wins'
+      player.must_respond_to 'role'
+      player.must_respond_to 'donations'
+      player.must_respond_to 'donations_received'
+      player.must_respond_to 'clan'
+      player.clan.must_be_instance_of Clashinator::Clan
+      player.must_respond_to 'league'
+      player.league.must_be_instance_of Clashinator::League
+      player.must_respond_to 'achievements'
+      player.achievements.must_be_instance_of Array
+      player.achievements.first
+            .must_be_instance_of Clashinator::Achievement
+      player.must_respond_to 'troops'
+      player.troops.must_be_instance_of Array
+      player.troops.first.must_be_instance_of Clashinator::Troop
+      player.must_respond_to 'heroes'
+      player.heroes.must_be_instance_of Array
+      player.heroes.first.must_be_instance_of Clashinator::Hero
+      player.must_respond_to 'spells'
+      player.spells.must_be_instance_of Array
+      player.spells.first.must_be_instance_of Clashinator::Spell
+    end
+
+    it 'must raise an error when wrong player_tag is provided' do
+      -> { Clashinator::Player.player_info('2222222222222') }
+        .must_raise RuntimeError
+    end
+  end
+end

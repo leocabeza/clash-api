@@ -2,7 +2,21 @@ module Clashinator
   # This class represents the clan model
   class Clan < Base
     def initialize(attrs)
-      super(attrs)
+      attrs.each do |name, val|
+        # convert camelCase to underscore
+        lower_camel_cased = to_underscore(name)
+        # dinamically set attr reader
+        (class << self; self; end).send(:attr_reader, lower_camel_cased.to_sym)
+        val = Clashinator::Location.new(val) if lower_camel_cased == 'location'
+        if lower_camel_cased == 'badge_urls'
+          val = Clashinator::BadgeUrl.new(val)
+        end
+        if lower_camel_cased == 'member_list' && val.is_a?(Array)
+          val = self.class.as_players(val)
+        end
+        # set instance variables dinamically
+        instance_variable_set "@#{lower_camel_cased}", val
+      end
     end
 
     def self.clan_info(clan_tag)
@@ -26,7 +40,7 @@ module Clashinator
       clan_tag = CGI.escape(clan_tag)
       response = get("/v1/clans/#{clan_tag}/members", new_options)
 
-      return as_member_list(response.parsed_response['items']) if response.ok?
+      return as_players(response.parsed_response['items']) if response.ok?
       raise response['message'] unless response.ok?
     end
 
