@@ -21,7 +21,7 @@ describe Clashinator::Hero do
       hero.must_respond_to 'max_level'
     end
 
-    it 'must have constructor values' do
+    it 'must return correct values of instance methods' do
       hero.name.must_equal 'Barbarian King'
       hero.level.must_equal 35
       hero.max_level.must_equal 40

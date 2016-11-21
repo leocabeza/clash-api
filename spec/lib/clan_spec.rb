@@ -3,10 +3,6 @@ require_relative '../spec_helper.rb'
 describe Clashinator::Clan do
 
   let(:clan_ok) { Clashinator::Clan.clan_info('#82JJP9PC') }
-  let(:clan_bad) { Clashinator::Clan.clan_info('#2222222222') }
-  let(:clan_array_search) do
-    Clashinator::Clan.search_clans(name: 'onehive', limit: 2)
-  end
 
   describe 'when Clan class exists' do
     it 'must have a Base Class parent' do
@@ -20,13 +16,14 @@ describe Clashinator::Clan do
     end
 
     it 'must return an array of clan instances' do
-      clan_array_search.must_be_instance_of Array
-      clan_array_search.length.wont_equal 0
-      clan_array_search.first.must_be_instance_of Clashinator::Clan
-      clan_array_search.first.must_respond_to 'location'
-      clan_array_search.first.location.must_be_instance_of Clashinator::Location
-      clan_array_search.first.must_respond_to 'badge_urls'
-      clan_array_search.first.badge_urls.must_be_instance_of Clashinator::BadgeUrl
+      clans = Clashinator::Clan.search_clans(name: 'vzlan warriors', limit: 1)
+      clans.must_be_instance_of Array
+      clans.length.wont_equal 0
+      clans.first.must_be_instance_of Clashinator::Clan
+      clans.first.must_respond_to 'location'
+      clans.first.location.must_be_instance_of Clashinator::Location
+      clans.first.must_respond_to 'badge_urls'
+      clans.first.badge_urls.must_be_instance_of Clashinator::BadgeUrl
     end
 
     it 'must raise an error when no query options given' do
@@ -55,7 +52,7 @@ describe Clashinator::Clan do
     end
 
     it 'must raise an error when wrong clan_tag is provided' do
-      -> { clan_bad }
+      -> { Clashinator::Clan.clan_info('#2222222222') }
         .must_raise RuntimeError
     end
   end
@@ -71,7 +68,7 @@ describe Clashinator::Clan do
     end
 
     it 'must return an array of clan members' do
-      members = Clashinator::Clan.list_clan_members('#VQ2QUJG', limit: 2)
+      members = Clashinator::Clan.list_clan_members('#VQ2QUJG', limit: 1)
       members.must_be_instance_of Array
       members.first.must_be_instance_of Clashinator::Player
     end
@@ -89,10 +86,9 @@ describe Clashinator::Clan do
 
     it 'must return an array of war logs given that the clan ' \
       'war log is set to public' do
-      war_logs = Clashinator::Clan.clan_war_log('#82JJP9PC', limit: 2)
+      war_logs = Clashinator::Clan.clan_war_log('#82JJP9PC', limit: 1)
       war_logs.must_be_instance_of Array
       war_logs.first.must_be_instance_of Clashinator::Warlog
-      war_logs.last.must_be_instance_of Clashinator::Warlog
     end
 
     it 'must raise an error when clan war log is set to private' do

@@ -10,10 +10,7 @@ describe Clashinator::Achievement do
     )
   end
 
-  describe 'when Achievement class exists' do
-  end
-
-  describe 'when the class is instantiated' do
+  describe 'when a hash of urls are provided' do
     it 'must respond to default attributes' do
       achievement.must_respond_to 'name'
       achievement.must_respond_to 'stars'
@@ -23,7 +20,7 @@ describe Clashinator::Achievement do
       achievement.must_respond_to 'completion_info'
     end
 
-    it 'must have constructor values' do
+    it 'must return correct values of instance methods' do
       achievement.name.must_equal 'Bigger Coffers'
       achievement.stars.must_equal 3
       achievement.value.must_equal 11

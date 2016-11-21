@@ -8,40 +8,65 @@ describe Clashinator::Location do
   end
 
   describe 'when list_locations class method exists' do
+
+    let(:locations) { Clashinator::Location.list_locations(limit: 1) }
+
     it 'must include a class method named list_locations' do
       Clashinator::Location.must_respond_to 'list_locations'
     end
 
-    it 'must return an array of location instances' do
-      locations = Clashinator::Location.list_locations(limit: 2)
+    it 'must have default attributes' do
       locations.must_be_instance_of Array
       locations.first.must_be_instance_of Clashinator::Location
       locations.first.must_respond_to 'id'
       locations.first.must_respond_to 'name'
       locations.first.must_respond_to 'is_country'
     end
+
+    it 'must return correct values for instance methods' do
+      locations.first.id.must_equal 32_000_000
+      locations.first.name.must_equal 'Europe'
+      locations.first.is_country.must_equal false
+    end
   end
 
   describe 'when location_info class method exists' do
+
+    let(:country_location) { Clashinator::Location.location_info('32000254') }
+    let(:continent_location) { Clashinator::Location.location_info('32000002') }
+
     it 'must include a class method named location_info' do
       Clashinator::Location.must_respond_to 'location_info'
     end
 
     it 'must return an instance of location when it is a country' do
-      location = Clashinator::Location.location_info('32000254')
-      location.must_be_instance_of Clashinator::Location
-      location.must_respond_to 'id'
-      location.must_respond_to 'name'
-      location.must_respond_to 'is_country'
-      location.must_respond_to 'country_code'
+      country_location.must_be_instance_of Clashinator::Location
+      country_location.must_respond_to 'id'
+      country_location.must_respond_to 'name'
+      country_location.must_respond_to 'is_country'
+      country_location.must_respond_to 'country_code'
+    end
+
+    it 'must return correct values for instance methods ' \
+      'when it is a country' do
+      country_location.id.must_equal 32_000_254
+      country_location.name.must_equal 'Venezuela'
+      country_location.is_country.must_equal true
+      country_location.country_code.must_equal 'VE'
     end
 
     it 'must return an instance of location when it is a continent' do
-      location = Clashinator::Location.location_info('32000002')
-      location.must_be_instance_of Clashinator::Location
-      location.must_respond_to 'id'
-      location.must_respond_to 'name'
-      location.must_respond_to 'is_country'
+      continent_location.must_be_instance_of Clashinator::Location
+      continent_location.must_respond_to 'id'
+      continent_location.must_respond_to 'name'
+      continent_location.must_respond_to 'is_country'
+    end
+
+    it 'must return correct values for instance methods ' \
+      'when it is a continent' do
+      continent_location.id.must_equal 32_000_002
+      continent_location.name.must_equal 'South America'
+      continent_location.is_country.must_equal false
     end
 
     it 'must raise an error when wrong location_id is provided' do
@@ -51,6 +76,7 @@ describe Clashinator::Location do
   end
 
   describe 'when location_clan_rankings class method exists' do
+
     it 'must include a class method named location_clan_rankings' do
       Clashinator::Location.must_respond_to 'location_clan_rankings'
     end
@@ -61,9 +87,11 @@ describe Clashinator::Location do
     end
 
     it 'must return an array of ranking instances' do
-      rankings = Clashinator::Location.location_clan_rankings('32000254', limit: 2)
-      rankings.must_be_instance_of Array
-      rankings.first.must_be_instance_of Clashinator::ClanRanking
+      clan_rankings = Clashinator::Location.location_clan_rankings(
+        '32000254', limit: 1
+      )
+      clan_rankings.must_be_instance_of Array
+      clan_rankings.first.must_be_instance_of Clashinator::ClanRanking
     end
   end
 
@@ -78,9 +106,11 @@ describe Clashinator::Location do
     end
 
     it 'must return an array of PlayerRanking instances' do
-      rankings = Clashinator::Location.location_player_rankings('32000254', limit: 2)
+      rankings = Clashinator::Location.location_player_rankings(
+        '32000254', limit: 1
+      )
       rankings.must_be_instance_of Array
-      # rankings.first.must_be_instance_of Clashinator::PlayerRanking
+      rankings.first.must_be_instance_of Clashinator::PlayerRanking
     end
   end
 end

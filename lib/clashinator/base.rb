@@ -11,8 +11,11 @@ module Clashinator
     base_uri 'https://api.clashofclans.com'
 
     CONFIG = YAML.load_file('config/secrets.yml')
-    ARRAY_OF_CLASSES = %w(member_list achievements troops heroes spells).freeze
-    HASH_THAT_ARE_OBJECTS = {
+    CLASS_MAP = {
+      member_list: 'Player', achievements: 'Achievement',
+      troops: 'Troop', heroes: 'Hero', spells: 'Spell'
+    }.freeze
+    OBJECT_MAP = {
       opponent: 'Clan', league: 'League',
       location: 'Location', badge_urls: 'BadgeUrl',
       icon_urls: 'BadgeUrl', clan: 'Clan'
@@ -31,9 +34,9 @@ module Clashinator
     # TODO: implement paging for some models, may be with a Pageable module?
 
     def verify_hash_that_are_objects(lower_camel_cased, val)
-      if HASH_THAT_ARE_OBJECTS.key? lower_camel_cased.to_sym
+      if OBJECT_MAP.key? lower_camel_cased.to_sym
         class_name = 'Clashinator::' \
-          "#{HASH_THAT_ARE_OBJECTS[lower_camel_cased.to_sym]}"
+          "#{OBJECT_MAP[lower_camel_cased.to_sym]}"
         val = Object
               .const_get(class_name)
               .new(val)
@@ -43,8 +46,10 @@ module Clashinator
     end
 
     def verify_array_of_classes(lower_camel_cased, val)
-      if ARRAY_OF_CLASSES.include?(lower_camel_cased) && val.is_a?(Array)
-        val = self.class.send("as_#{lower_camel_cased}", val)
+      if CLASS_MAP.key?(lower_camel_cased.to_sym) && val.is_a?(Array)
+        class_name = 'Clashinator::' \
+          "#{CLASS_MAP[lower_camel_cased.to_sym]}"
+        val = self.class.as_array_of(Object.const_get(class_name), val)
       end
 
       val
@@ -63,7 +68,8 @@ module Clashinator
       # with the official API
       query_options = {}
       options.each do |name, val|
-        val = to_camel_case(ERB::Util.url_encode(val)) if val.class == String
+        name = to_camel_case(name.to_s)
+        val.gsub!('#', '%23') if val.class == String
         query_options[name.to_sym] = val
       end
 

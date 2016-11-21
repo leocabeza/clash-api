@@ -1,5 +1,6 @@
 require 'httparty'
-require 'erb'
+require 'cgi'
+# require 'erb'
 require 'pp' # debug only
 
 require 'clashinator/base.rb'

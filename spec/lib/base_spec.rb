@@ -37,6 +37,21 @@ describe Clashinator::Base do
       Clashinator::Base.http_default_options[:headers]
                        .key?('Authorization').must_equal true
     end
+
+    it 'must respond to class method prepare_query_options' do
+      Clashinator::Base.must_respond_to 'prepare_query_options'
+    end
+
+    it 'must return sanitized query options in prepare_query_options' do
+      options = Clashinator::Base.prepare_query_options(
+        name: 'Vzlan Warriors', limit: 1
+      )
+
+      options.must_be_instance_of Hash
+      options.key?(:query).must_equal true
+      options[:query].key?(:name).must_equal true
+      options[:query][:name].must_equal 'Vzlan Warriors'
+    end
   end
 
   describe 'when an_array_of class method is defined' do

@@ -17,7 +17,9 @@ module Clashinator
       new_options = prepare_query_options(options)
       response = get('/v1/clans', new_options)
 
-      return as_clans(response.parsed_response['items']) if response.ok?
+      if response.ok?
+        return as_array_of(Clashinator::Clan, response.parsed_response['items'])
+      end
       raise response['message'] unless response.ok?
     end
 
@@ -26,7 +28,11 @@ module Clashinator
       clan_tag = CGI.escape(clan_tag)
       response = get("/v1/clans/#{clan_tag}/members", new_options)
 
-      return as_member_list(response.parsed_response['items']) if response.ok?
+      if response.ok?
+        return as_array_of(
+          Clashinator::Player, response.parsed_response['items']
+        )
+      end
       raise response['message'] unless response.ok?
     end
 
@@ -37,8 +43,8 @@ module Clashinator
       response = get("/v1/clans/#{clan_tag}/warlog", new_options)
 
       if response.ok?
-        return as_warlogs(
-          response.parsed_response['items']
+        return as_array_of(
+          Clashinator::Warlog, response.parsed_response['items']
         )
       end
       raise response['reason'] unless response.ok?

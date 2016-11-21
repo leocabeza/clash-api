@@ -3,7 +3,7 @@ require_relative '../spec_helper.rb'
 describe Clashinator::League do
 
   let(:league_ok) { Clashinator::League.league_info('29000022') }
-  let(:league_list) { Clashinator::League.list_leagues(limit: 2) }
+  let(:league_list) { Clashinator::League.list_leagues(limit: 1) }
 
   describe 'when League class exists' do
     it 'must have a Base Class parent' do
@@ -58,21 +58,19 @@ describe Clashinator::League do
     end
 
     it 'must return an array of season instances' do
-      # we will mock this for now, but it has to
-      # return an array of season instances
-      seasons = Clashinator::League.league_seasons('29000022', limit: 2)
+      seasons = Clashinator::League.league_seasons('29000022', limit: 1)
       seasons.must_be_instance_of Array
       seasons.length.wont_equal 0
       seasons.first.must_be_instance_of Clashinator::Season
     end
 
     it 'must raise an error when league_id is different than Legend League' do
-      -> { Clashinator::League.league_seasons('29000012', limit: 2) }
+      -> { Clashinator::League.league_seasons('29000012', limit: 1) }
         .must_raise RuntimeError
     end
 
     it 'must raise an error when wrong league_id is provided' do
-      -> { Clashinator::League.league_seasons('2222222222222', limit: 2) }
+      -> { Clashinator::League.league_seasons('2222222222222', limit: 1) }
         .must_raise RuntimeError
     end
   end
@@ -84,7 +82,7 @@ describe Clashinator::League do
 
     it 'must return an array of ranking instances' do
       rankings = Clashinator::League.league_season_rankings(
-        '29000022', '2015-10', limit: 2
+        '29000022', '2015-10', limit: 1
       )
       rankings.must_be_instance_of Array
       rankings.first.must_be_instance_of Clashinator::PlayerRanking
@@ -93,7 +91,7 @@ describe Clashinator::League do
     it 'must raise an error when league_id is different than Legend League' do
       lambda do
         Clashinator::League
-          .league_season_rankings('29000012', '2015-10', limit: 2)
+          .league_season_rankings('29000012', '2015-10', limit: 1)
           .must_raise RuntimeError
       end
     end
@@ -101,7 +99,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong league_id is provided' do
       lambda do
         Clashinator::League
-          .league_season_rankings('2222222222222', '2015-10', limit: 2)
+          .league_season_rankings('2222222222222', '2015-10', limit: 1)
           .must_raise RuntimeError
       end
     end
@@ -109,7 +107,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong season_id is provided' do
       lambda do
         Clashinator::League
-          .league_season_rankings('29000022', '2222222222222', limit: 2)
+          .league_season_rankings('29000022', '2222222222222', limit: 1)
           .must_raise RuntimeError
       end
     end

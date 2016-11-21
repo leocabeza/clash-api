@@ -9,7 +9,11 @@ module Clashinator
       new_options = prepare_query_options(options)
       response = get('/v1/leagues', new_options)
 
-      return as_leagues(response.parsed_response['items']) if response.ok?
+      if response.ok?
+        return as_array_of(
+          Clashinator::League, response.parsed_response['items']
+        )
+      end
       raise response['message'] unless response.ok?
     end
 
@@ -24,20 +28,25 @@ module Clashinator
       new_options = prepare_query_options(options)
       response = get("/v1/leagues/#{league_id}/seasons", new_options)
 
-      return as_seasons(response.parsed_response['items']) if response.ok?
+      if response.ok?
+        return as_array_of(
+          Clashinator::Season, response.parsed_response['items']
+        )
+      end
       raise response['reason'] unless response.ok?
     end
 
     def self.league_season_rankings(league_id, season_id, options = {})
       # only available for legend_league
-      new_options = prepare_query_options(options)
       response = get(
         "/v1/leagues/#{league_id}/seasons/#{season_id}",
-        new_options
+        prepare_query_options(options)
       )
 
       if response.ok?
-        return as_player_rankings(response.parsed_response['items'])
+        return as_array_of(
+          Clashinator::PlayerRanking, response.parsed_response['items']
+        )
       end
       raise response['reason'] unless response.ok?
     end
