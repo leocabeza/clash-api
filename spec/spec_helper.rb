@@ -1,6 +1,7 @@
 require_relative '../lib/clashinator'
 
 require 'minitest/autorun'
+# TODO: use webmock for all tests
 # require 'webmock/minitest'
 # require 'vcr'
 

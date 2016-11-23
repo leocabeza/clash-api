@@ -26,6 +26,15 @@ describe Clashinator::Clan do
       clans.items.first.badge_urls.must_be_instance_of Clashinator::BadgeUrl
     end
 
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::Clan.search_clans(
+          name: 'vzlan warriors', limit: 1,
+          after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
+
     it 'must raise an error when no query options given' do
       -> { Clashinator::Clan.search_clans }
         .must_raise ArgumentError
@@ -62,15 +71,24 @@ describe Clashinator::Clan do
       Clashinator::Clan.must_respond_to 'list_clan_members'
     end
 
+    it 'must return an array of clan members' do
+      members = Clashinator::Clan.list_clan_members('#VQ2QUJG', limit: 1)
+      members.must_be_instance_of Clashinator::ArrayResource
+      members.items.first.must_be_instance_of Clashinator::Player
+    end
+
     it 'must raise an error when no clan_tag is given' do
       -> { Clashinator::Clan.list_clan_members }
         .must_raise ArgumentError
     end
 
-    it 'must return an array of clan members' do
-      members = Clashinator::Clan.list_clan_members('#VQ2QUJG', limit: 1)
-      members.must_be_instance_of Clashinator::ArrayResource
-      members.items.first.must_be_instance_of Clashinator::Player
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::Clan.list_clan_members(
+          '#VQ2QUJG',
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
     end
   end
 
@@ -89,6 +107,15 @@ describe Clashinator::Clan do
       war_logs = Clashinator::Clan.clan_war_log('#82JJP9PC', limit: 1)
       war_logs.must_be_instance_of Clashinator::ArrayResource
       war_logs.items.first.must_be_instance_of Clashinator::Warlog
+    end
+
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::Clan.clan_war_log(
+          '#82JJP9PC',
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
     end
 
     it 'must raise an error when clan war log is set to private' do

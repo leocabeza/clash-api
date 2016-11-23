@@ -3,9 +3,6 @@ module Clashinator
   # This is only for array-based responses
   # that contains an items attribute and
   # a paging attribute
-  # TODO: when using array_resource,
-  # if after or before attributes are wrong
-  # an error will be thrown
   class ArrayResource
     attr_accessor :items, :paging, :model
 

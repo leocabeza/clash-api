@@ -29,6 +29,14 @@ describe Clashinator::League do
       league_list.items.first
                  .icon_urls.must_be_instance_of Clashinator::BadgeUrl
     end
+
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::League.list_leagues(
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
   end
 
   describe 'when league_info class method exists' do
@@ -65,6 +73,14 @@ describe Clashinator::League do
       seasons.items.first.must_be_instance_of Clashinator::Season
     end
 
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::League.league_seasons(
+          '29000022', limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
+
     it 'must raise an error when league_id is different than Legend League' do
       -> { Clashinator::League.league_seasons('29000012', limit: 1) }
         .must_raise RuntimeError
@@ -89,11 +105,20 @@ describe Clashinator::League do
       rankings.items.first.must_be_instance_of Clashinator::PlayerRanking
     end
 
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::League.league_season_rankings(
+          '29000022', '2015-10',
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
+
     it 'must raise an error when league_id is different than Legend League' do
       lambda do
         Clashinator::League
           .league_season_rankings('29000012', '2015-10', limit: 1)
-          .must_raise RuntimeError
+          .must_raise ArgumentError
       end
     end
 
@@ -101,7 +126,7 @@ describe Clashinator::League do
       lambda do
         Clashinator::League
           .league_season_rankings('2222222222222', '2015-10', limit: 1)
-          .must_raise RuntimeError
+          .must_raise ArgumentError
       end
     end
 
@@ -109,7 +134,7 @@ describe Clashinator::League do
       lambda do
         Clashinator::League
           .league_season_rankings('29000022', '2222222222222', limit: 1)
-          .must_raise RuntimeError
+          .must_raise ArgumentError
       end
     end
   end

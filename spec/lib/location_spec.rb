@@ -28,6 +28,14 @@ describe Clashinator::Location do
       locations.items.first.name.must_equal 'Europe'
       locations.items.first.is_country.must_equal false
     end
+
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::Location.list_locations(
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
   end
 
   describe 'when location_info class method exists' do
@@ -93,16 +101,20 @@ describe Clashinator::Location do
       clan_rankings.must_be_instance_of Clashinator::ArrayResource
       clan_rankings.items.first.must_be_instance_of Clashinator::ClanRanking
     end
+
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::Location.location_clan_rankings(
+          '32000254',
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
   end
 
   describe 'when location_player_rankings class method exists' do
     it 'must include a class method named location_clan_rankings' do
       Clashinator::Location.must_respond_to 'location_player_rankings'
-    end
-
-    it 'must raise an error when wrong location_id is provided' do
-      -> { Clashinator::Location.location_player_rankings('2222222222222') }
-        .must_raise RuntimeError
     end
 
     it 'must return an ArrayResource of PlayerRanking instances' do
@@ -111,6 +123,20 @@ describe Clashinator::Location do
       )
       rankings.must_be_instance_of Clashinator::ArrayResource
       rankings.items.first.must_be_instance_of Clashinator::PlayerRanking
+    end
+
+    it 'must raise an error when wrong paging params are given' do
+      lambda do
+        Clashinator::Location.location_player_rankings(
+          '32000254',
+          limit: 1, after: '2938383838', before: '2938383838'
+        ).must_raise ArgumentError
+      end
+    end
+
+    it 'must raise an error when wrong location_id is provided' do
+      -> { Clashinator::Location.location_player_rankings('2222222222222') }
+        .must_raise RuntimeError
     end
   end
 end
