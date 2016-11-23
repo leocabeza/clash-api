@@ -33,22 +33,25 @@ describe Clashinator::Player do
       player.must_respond_to 'donations'
       player.must_respond_to 'donations_received'
       player.must_respond_to 'clan'
-      player.clan.must_be_instance_of Clashinator::Clan
       player.must_respond_to 'league'
-      player.league.must_be_instance_of Clashinator::League
       player.must_respond_to 'achievements'
-      player.achievements.must_be_instance_of Array
-      player.achievements.first
-            .must_be_instance_of Clashinator::Achievement
       player.must_respond_to 'troops'
-      player.troops.must_be_instance_of Array
-      player.troops.first.must_be_instance_of Clashinator::Troop
       player.must_respond_to 'heroes'
-      player.heroes.must_be_instance_of Array
-      player.heroes.first.must_be_instance_of Clashinator::Hero
       player.must_respond_to 'spells'
-      player.spells.must_be_instance_of Array
-      player.spells.first.must_be_instance_of Clashinator::Spell
+    end
+
+    it 'must have hash attributes as objects' do
+      player.clan.must_be_instance_of Clashinator::Clan
+      player.league.must_be_instance_of Clashinator::League
+      player.achievements.must_be_instance_of Clashinator::ArrayResource
+      player.achievements.items.first
+            .must_be_instance_of Clashinator::Achievement
+      player.troops.must_be_instance_of Clashinator::ArrayResource
+      player.troops.items.first.must_be_instance_of Clashinator::Troop
+      player.heroes.must_be_instance_of Clashinator::ArrayResource
+      player.heroes.items.first.must_be_instance_of Clashinator::Hero
+      player.spells.must_be_instance_of Clashinator::ArrayResource
+      player.spells.items.first.must_be_instance_of Clashinator::Spell
     end
 
     it 'must raise an error when wrong player_tag is provided' do

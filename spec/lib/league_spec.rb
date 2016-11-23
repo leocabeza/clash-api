@@ -16,17 +16,18 @@ describe Clashinator::League do
       Clashinator::League.must_respond_to 'list_leagues'
     end
 
-    it 'must return an Array of league instances' do
-      league_list.must_be_instance_of Array
-      league_list.length.wont_equal 0
-      league_list.first.must_be_instance_of Clashinator::League
-      league_list.first.must_respond_to 'id'
-      league_list.first.must_respond_to 'name'
-      league_list.first.must_respond_to 'icon_urls'
+    it 'must return an ArrayResource of league instances' do
+      league_list.must_be_instance_of Clashinator::ArrayResource
+      league_list.items.length.wont_equal 0
+      league_list.items.first.must_be_instance_of Clashinator::League
+      league_list.items.first.must_respond_to 'id'
+      league_list.items.first.must_respond_to 'name'
+      league_list.items.first.must_respond_to 'icon_urls'
     end
 
     it 'must have array hash attributes as objects' do
-      league_list.first.icon_urls.must_be_instance_of Clashinator::BadgeUrl
+      league_list.items.first
+                 .icon_urls.must_be_instance_of Clashinator::BadgeUrl
     end
   end
 
@@ -57,11 +58,11 @@ describe Clashinator::League do
       Clashinator::League.must_respond_to 'league_seasons'
     end
 
-    it 'must return an array of season instances' do
+    it 'must return an ArrayResource of season instances' do
       seasons = Clashinator::League.league_seasons('29000022', limit: 1)
-      seasons.must_be_instance_of Array
-      seasons.length.wont_equal 0
-      seasons.first.must_be_instance_of Clashinator::Season
+      seasons.must_be_instance_of Clashinator::ArrayResource
+      seasons.items.length.wont_equal 0
+      seasons.items.first.must_be_instance_of Clashinator::Season
     end
 
     it 'must raise an error when league_id is different than Legend League' do
@@ -80,12 +81,12 @@ describe Clashinator::League do
       Clashinator::League.must_respond_to 'league_season_rankings'
     end
 
-    it 'must return an array of ranking instances' do
+    it 'must return an ArrayResource of ranking instances' do
       rankings = Clashinator::League.league_season_rankings(
         '29000022', '2015-10', limit: 1
       )
-      rankings.must_be_instance_of Array
-      rankings.first.must_be_instance_of Clashinator::PlayerRanking
+      rankings.must_be_instance_of Clashinator::ArrayResource
+      rankings.items.first.must_be_instance_of Clashinator::PlayerRanking
     end
 
     it 'must raise an error when league_id is different than Legend League' do

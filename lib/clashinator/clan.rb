@@ -6,7 +6,7 @@ module Clashinator
     end
 
     def self.clan_info(clan_tag)
-      clan_tag = CGI.escape(clan_tag)
+      clan_tag.gsub!('#', '%23')
       response = get("/v1/clans/#{clan_tag}", http_default_options)
 
       return new(response.parsed_response) if response.ok?
@@ -18,19 +18,24 @@ module Clashinator
       response = get('/v1/clans', new_options)
 
       if response.ok?
-        return as_array_of(Clashinator::Clan, response.parsed_response['items'])
+        return Clashinator::ArrayResource.new(
+          Clashinator::Clan,
+          response.parsed_response['items'],
+          response.parsed_response['paging']
+        )
       end
       raise response['message'] unless response.ok?
     end
 
     def self.list_clan_members(clan_tag, options)
       new_options = prepare_query_options(options)
-      clan_tag = CGI.escape(clan_tag)
+      clan_tag.gsub!('#', '%23')
       response = get("/v1/clans/#{clan_tag}/members", new_options)
 
       if response.ok?
-        return as_array_of(
-          Clashinator::Player, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::Player, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['message'] unless response.ok?
@@ -39,12 +44,13 @@ module Clashinator
     def self.clan_war_log(clan_tag, options)
       # response.code will be 403 if clan war log is set to private
       new_options = prepare_query_options(options)
-      clan_tag = CGI.escape(clan_tag)
+      clan_tag.gsub!('#', '%23')
       response = get("/v1/clans/#{clan_tag}/warlog", new_options)
 
       if response.ok?
-        return as_array_of(
-          Clashinator::Warlog, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::Warlog, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['reason'] unless response.ok?

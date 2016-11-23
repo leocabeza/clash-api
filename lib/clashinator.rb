@@ -1,9 +1,9 @@
 require 'httparty'
 require 'cgi'
-# require 'erb'
 require 'pp' # debug only
 
 require 'clashinator/base.rb'
+require 'clashinator/array_resource.rb'
 require 'clashinator/army.rb'
 require 'clashinator/season.rb'
 require 'clashinator/clan_ranking.rb'

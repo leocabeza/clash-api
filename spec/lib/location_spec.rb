@@ -16,17 +16,17 @@ describe Clashinator::Location do
     end
 
     it 'must have default attributes' do
-      locations.must_be_instance_of Array
-      locations.first.must_be_instance_of Clashinator::Location
-      locations.first.must_respond_to 'id'
-      locations.first.must_respond_to 'name'
-      locations.first.must_respond_to 'is_country'
+      locations.must_be_instance_of Clashinator::ArrayResource
+      locations.items.first.must_be_instance_of Clashinator::Location
+      locations.items.first.must_respond_to 'id'
+      locations.items.first.must_respond_to 'name'
+      locations.items.first.must_respond_to 'is_country'
     end
 
     it 'must return correct values for instance methods' do
-      locations.first.id.must_equal 32_000_000
-      locations.first.name.must_equal 'Europe'
-      locations.first.is_country.must_equal false
+      locations.items.first.id.must_equal 32_000_000
+      locations.items.first.name.must_equal 'Europe'
+      locations.items.first.is_country.must_equal false
     end
   end
 
@@ -86,12 +86,12 @@ describe Clashinator::Location do
         .must_raise RuntimeError
     end
 
-    it 'must return an array of ranking instances' do
+    it 'must return an ArrayResource of ranking instances' do
       clan_rankings = Clashinator::Location.location_clan_rankings(
         '32000254', limit: 1
       )
-      clan_rankings.must_be_instance_of Array
-      clan_rankings.first.must_be_instance_of Clashinator::ClanRanking
+      clan_rankings.must_be_instance_of Clashinator::ArrayResource
+      clan_rankings.items.first.must_be_instance_of Clashinator::ClanRanking
     end
   end
 
@@ -105,12 +105,12 @@ describe Clashinator::Location do
         .must_raise RuntimeError
     end
 
-    it 'must return an array of PlayerRanking instances' do
+    it 'must return an ArrayResource of PlayerRanking instances' do
       rankings = Clashinator::Location.location_player_rankings(
         '32000254', limit: 1
       )
-      rankings.must_be_instance_of Array
-      rankings.first.must_be_instance_of Clashinator::PlayerRanking
+      rankings.must_be_instance_of Clashinator::ArrayResource
+      rankings.items.first.must_be_instance_of Clashinator::PlayerRanking
     end
   end
 end

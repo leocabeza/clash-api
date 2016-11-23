@@ -10,8 +10,9 @@ module Clashinator
       response = get('/v1/locations', new_options)
 
       if response.ok?
-        return as_array_of(
-          Clashinator::Location, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::Location, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['message'] unless response.ok?
@@ -29,8 +30,9 @@ module Clashinator
       response = get("/v1/locations/#{location_id}/rankings/clans", new_options)
 
       if response.ok?
-        return as_array_of(
-          Clashinator::ClanRanking, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::ClanRanking, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['reason'] unless response.ok?
@@ -42,11 +44,10 @@ module Clashinator
         prepare_query_options(options)
       )
 
-      if response.ok?
-        return as_array_of(
-          Clashinator::PlayerRanking, response.parsed_response['items']
-        )
-      end
+      return Clashinator::ArrayResource.new(
+        Clashinator::PlayerRanking, response.parsed_response['items'],
+        response.parsed_response['paging']
+      ) if response.ok?
       raise response['reason'] unless response.ok?
     end
   end

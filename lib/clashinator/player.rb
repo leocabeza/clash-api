@@ -6,7 +6,7 @@ module Clashinator
     end
 
     def self.player_info(player_tag)
-      player_tag = ERB::Util.url_encode(player_tag.to_s)
+      player_tag.gsub!('#', '%23')
       response = get("/v1/players/#{player_tag}", http_default_options)
 
       return new(response.parsed_response) if response.ok?

@@ -10,8 +10,9 @@ module Clashinator
       response = get('/v1/leagues', new_options)
 
       if response.ok?
-        return as_array_of(
-          Clashinator::League, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::League, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['message'] unless response.ok?
@@ -29,8 +30,9 @@ module Clashinator
       response = get("/v1/leagues/#{league_id}/seasons", new_options)
 
       if response.ok?
-        return as_array_of(
-          Clashinator::Season, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::Season, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['reason'] unless response.ok?
@@ -44,8 +46,9 @@ module Clashinator
       )
 
       if response.ok?
-        return as_array_of(
-          Clashinator::PlayerRanking, response.parsed_response['items']
+        return Clashinator::ArrayResource.new(
+          Clashinator::PlayerRanking, response.parsed_response['items'],
+          response.parsed_response['paging']
         )
       end
       raise response['reason'] unless response.ok?

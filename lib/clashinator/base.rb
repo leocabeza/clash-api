@@ -25,18 +25,16 @@ module Clashinator
       attrs.each do |name, val|
         lower_camel_cased = to_underscore(name)
         (class << self; self; end).send(:attr_reader, lower_camel_cased.to_sym)
-        val = verify_hash_that_are_objects(lower_camel_cased, val)
-        val = verify_array_of_classes(lower_camel_cased, val)
+        val = verify_hash_that_are_objects(lower_camel_cased.to_sym, val)
+        val = verify_array_of_classes(lower_camel_cased.to_sym, val)
         instance_variable_set "@#{lower_camel_cased}", val
       end
     end
 
-    # TODO: implement paging for some models, may be with a Pageable module?
-
     def verify_hash_that_are_objects(lower_camel_cased, val)
-      if OBJECT_MAP.key? lower_camel_cased.to_sym
+      if OBJECT_MAP.key? lower_camel_cased
         class_name = 'Clashinator::' \
-          "#{OBJECT_MAP[lower_camel_cased.to_sym]}"
+          "#{OBJECT_MAP[lower_camel_cased]}"
         val = Object
               .const_get(class_name)
               .new(val)
@@ -46,10 +44,25 @@ module Clashinator
     end
 
     def verify_array_of_classes(lower_camel_cased, val)
-      if CLASS_MAP.key?(lower_camel_cased.to_sym) && val.is_a?(Array)
-        class_name = 'Clashinator::' \
-          "#{CLASS_MAP[lower_camel_cased.to_sym]}"
-        val = self.class.as_array_of(Object.const_get(class_name), val)
+      key_found = CLASS_MAP.key?(lower_camel_cased)
+      val = get_array_resource(lower_camel_cased, val) if key_found
+
+      val
+    end
+
+    private def get_array_resource(lower_camel_cased, val)
+      class_name = "Clashinator::#{CLASS_MAP[lower_camel_cased]}"
+      model = Object.const_get(class_name)
+      # this condition is for paging structures
+      # for instance Clan.search_clans
+      if val.is_a? Array
+        val = Clashinator::ArrayResource.new(model, val)
+      # this other condition is for array based structures with no paging
+      # for instance member_list of Clan.clan_info 'member_list' attribute
+      elsif val.is_a?(Hash) && val.key?(:items) && val.key?(:paging)
+        val = Clashinator::ArrayResource.new(
+          model, val['items'], val['paging']
+        )
       end
 
       val
@@ -75,18 +88,6 @@ module Clashinator
 
       # duplicate http_default_options to add query_options
       http_default_options.dup.merge(query: query_options)
-    end
-
-    def self.as_array_of(model, array)
-      new_array = []
-
-      array.each do |arr|
-        new_array.push(
-          model.new(arr)
-        )
-      end
-
-      new_array
     end
   end
 end
