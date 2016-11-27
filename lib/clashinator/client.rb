@@ -1,89 +1,78 @@
 module Clashinator
+  # Client class that acts as
+  # interface of http methods
+  # available for the client itself
   class Client
-    CLASH_OF_CLANS_API = 'https://api.clashofclans.com'
-    ENDPOINTS = {
-      find_clan: '/v1/clans',
-      get_clan_info: '/v1/clans/{clan_tag}',
-      list_clan_members: '/v1/clans/{clan_tag}/members',
-      list_war_log: '/v1/clans/{clan_tag}/warlog',
-      list_locations: '/v1/locations',
-      get_location_info: '/v1/locations/{location_id}',
-      get_clan_ranking_for_location: '/v1/locations/{location_id}/rankings/clans',
-      get_player_ranking_for_location: '/v1/locations/{location_id}/rankings/players',
-      list_leagues: '/v1/leagues',
-      get_league: '/v1/leagues/{league_id}',
-      get_league_seasons: '/v1/leagues/{league_id}/seasons',
-      get_league_season_rankings: '/v1/leagues/{league_id}/seasons/{season_id}'
-    }
-
     attr_reader :token
 
     def initialize(token)
       @token = token
     end
 
-    def method_missing(method_name, *args, &block)
-      ENDPOINTS.include?(method_name) ? call(method_name, *args) : super
+    # client class methods
+
+    def search_clans(options)
+      Clashinator::Clan.search_clans(@token, options)
     end
 
-    def respond_to_missing?(*args)
-      ENDPOINTS.include?(args[0]) || super
+    def clan_info(tag)
+      Clashinator::Clan.clan_info(@token, tag)
     end
 
-    def call(method_name, params = {})
-      connection_params = build_connection_params(method_name, params)
-      response = connection.get(
-        connection_params[:url],
-        connection_params[:query_params].empty? ? {} : connection_params[:query_params]
+    def list_clan_members(tag, options = {})
+      Clashinator::Clan.list_clan_members(@token, tag, options)
+    end
+
+    def clan_war_log(tag, options = {})
+      Clashinator::Clan.clan_war_log(@token, tag, options)
+    end
+
+    # location class methods
+
+    def list_locations(options = {})
+      Clashinator::Location.list_locations(@token, options)
+    end
+
+    def location_info(location_id)
+      Clashinator::Location.location_info(@token, location_id)
+    end
+
+    def location_clan_rankings(location_id, options = {})
+      Clashinator::Locaton.location_clan_rankings(
+        @token, location_id, options
       )
-      if response.success?
-        JSON.parse(response.body.to_json)
-      else
-        raise Exceptions::ResponseError.new(response),
-          'Clash of clans API has returned the error.'
-      end
     end
 
-    private
-
-    def build_connection_params(method_name, params)
-      url = get_url(method_name)
-      query_params = ''
-      if has_path_param(url)
-        params.each do |key, value|
-          url.gsub!("{#{key}}", CGI::escape(value.to_s))
-        end
-        url.gsub!(/\/{\w+}/, '')
-      else
-        query_params = params
-      end
-      {url: url, query_params: query_params}
+    def location_player_rankings(player_tag, options = {})
+      Clashinator::Location.location_player_rankings(
+        @token, player_tag, options
+      )
     end
 
-    def get_url(method_name)
-      ENDPOINTS[method_name].clone
+    # league class methods
+
+    def list_leagues(options = {})
+      Clashinator::League.list_leagues(@token, options)
     end
 
-    def has_path_param(url)
-      has_path_param = /{\w+}/ =~ url
-      !has_path_param.nil? 
+    def league_info(league_id)
+      Clashinator::League.league_info(@token, league_id)
     end
 
-    def connection
-      @conn ||= Faraday.new(connection_options) do |faraday|
-        faraday.adapter Faraday.default_adapter
-        faraday.response :json#logger
-      end
+    def league_seasons(league_id, options = {})
+      Clashinator::League.league_seasons(@token, league_id, options)
     end
 
-    def connection_options
-      {
-        url: CLASH_OF_CLANS_API,
-        headers: {
-          content_type: 'application/json',
-          authorization: "Bearer #{token}"
-        }
-      }
+    def league_season_rankings(league_id, season_id, options = {})
+      Clashinator::League.league_season_rankings(
+        @token, league_id, season_id, options
+      )
+    end
+
+    # player class methods
+
+    def player_info(tag)
+      Clashinator::Player.player_info(@token, tag)
     end
   end
 end
