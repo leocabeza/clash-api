@@ -2,7 +2,9 @@ require_relative '../spec_helper.rb'
 
 describe Clashinator::Clan do
 
-  let(:clan_ok) { Clashinator::Clan.clan_info('#82JJP9PC') }
+  let(:clan_ok) do
+    Clashinator::Clan.clan_info(config['token_test'], '#82JJP9PC')
+  end
 
   describe 'when Clan class exists' do
     it 'must have a Base Class parent' do
@@ -16,7 +18,10 @@ describe Clashinator::Clan do
     end
 
     it 'must return an array of clan instances' do
-      clans = Clashinator::Clan.search_clans(name: 'vzlan warriors', limit: 1)
+      clans = Clashinator::Clan.search_clans(
+        config['token_test'],
+        name: 'vzlan warriors', limit: 1
+      )
       clans.must_be_instance_of Clashinator::ArrayResource
       clans.items.length.wont_equal 0
       clans.items.first.must_be_instance_of Clashinator::Clan
@@ -29,15 +34,15 @@ describe Clashinator::Clan do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Clan.search_clans(
+          config['token_test'],
           name: 'vzlan warriors', limit: 1,
-          after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when no query options given' do
-      -> { Clashinator::Clan.search_clans }
-        .must_raise ArgumentError
+      -> { Clashinator::Clan.search_clans }.must_raise ArgumentError
     end
   end
 
@@ -61,34 +66,36 @@ describe Clashinator::Clan do
     end
 
     it 'must raise an error when wrong clan_tag is provided' do
-      -> { Clashinator::Clan.clan_info('#2222222222') }
+      -> { Clashinator::Clan.clan_info(config['token_test'], '#2222222222') }
         .must_raise RuntimeError
     end
   end
 
-  describe 'when list clan member class method exists' do
+  describe 'when list_clan_member class method exists' do
     it 'must include a class method named list_clan_members' do
       Clashinator::Clan.must_respond_to 'list_clan_members'
     end
 
     it 'must return an array of clan members' do
-      members = Clashinator::Clan.list_clan_members('#VQ2QUJG', limit: 1)
+      members = Clashinator::Clan.list_clan_members(
+        config['token_test'], '#VQ2QUJG', limit: 1
+      )
       members.must_be_instance_of Clashinator::ArrayResource
       members.items.first.must_be_instance_of Clashinator::Player
     end
 
     it 'must raise an error when no clan_tag is given' do
-      -> { Clashinator::Clan.list_clan_members }
-        .must_raise ArgumentError
+      -> { Clashinator::Clan.list_clan_members }.must_raise ArgumentError
     end
 
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Clan.list_clan_members(
+          config['token_test'],
           '#VQ2QUJG',
-          limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
   end
 
@@ -97,30 +104,35 @@ describe Clashinator::Clan do
       Clashinator::Clan.must_respond_to 'clan_war_log'
     end
 
-    it 'must raise an error when no clan_tag is given' do
-      -> { Clashinator::Clan.clan_war_log }
-        .must_raise ArgumentError
-    end
-
     it 'must return an array of war logs given that the clan ' \
       'war log is set to public' do
-      war_logs = Clashinator::Clan.clan_war_log('#82JJP9PC', limit: 1)
+      war_logs = Clashinator::Clan.clan_war_log(
+        config['token_test'], '#82JJP9PC', limit: 1
+      )
       war_logs.must_be_instance_of Clashinator::ArrayResource
       war_logs.items.first.must_be_instance_of Clashinator::Warlog
+    end
+
+    it 'must raise an error when no clan_tag is given' do
+      -> { Clashinator::Clan.clan_war_log }.must_raise ArgumentError
     end
 
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Clan.clan_war_log(
+          config['token_test'],
           '#82JJP9PC',
-          limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when clan war log is set to private' do
-      -> { Clashinator::Clan.clan_war_log('#VQ2QUJG', {}) }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::Clan.clan_war_log(
+          config['token_test'], '#VQ2QUJG'
+        )
+      end.must_raise RuntimeError
     end
   end
 end

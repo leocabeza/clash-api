@@ -2,6 +2,15 @@ require_relative '../spec_helper.rb'
 
 describe Clashinator::ArrayResource do
 
+  # TODO: this in theory works fine,
+  # but, the only way I can test if paging
+  # attributes are OK is if I do a real
+  # HTTP request.
+  # i.e: Clashinator::Clan.search_clans(
+  #   name: 'vzlan warriors', limit: 1,
+  #   after: 'wrong integer param here', before: 'wrong integer param here'
+  # )
+
   let(:array_resource) do
     Clashinator::ArrayResource.new(
       Clashinator::Clan,

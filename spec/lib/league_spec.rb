@@ -2,8 +2,16 @@ require_relative '../spec_helper.rb'
 
 describe Clashinator::League do
 
-  let(:league_ok) { Clashinator::League.league_info('29000022') }
-  let(:league_list) { Clashinator::League.list_leagues(limit: 1) }
+  let(:league_ok) do
+    Clashinator::League.league_info(
+      config['token_test'], '29000022'
+    )
+  end
+  let(:league_list) do
+    Clashinator::League.list_leagues(
+      config['token_test'], limit: 1
+    )
+  end
 
   describe 'when League class exists' do
     it 'must have a Base Class parent' do
@@ -33,7 +41,8 @@ describe Clashinator::League do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::League.list_leagues(
-          limit: 1, after: '2938383838', before: '2938383838'
+          config['token_test'],
+          limit: 1, after: '2938383838'
         ).must_raise ArgumentError
       end
     end
@@ -56,8 +65,11 @@ describe Clashinator::League do
     end
 
     it 'must raise an error when wrong league_id is provided' do
-      -> { Clashinator::League.league_info('2222222222222') }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::League.league_info(
+          config['token_test'], '2222222222222'
+        ).must_raise RuntimeError
+      end
     end
   end
 
@@ -67,7 +79,9 @@ describe Clashinator::League do
     end
 
     it 'must return an ArrayResource of season instances' do
-      seasons = Clashinator::League.league_seasons('29000022', limit: 1)
+      seasons = Clashinator::League.league_seasons(
+        config['token_test'], '29000022', limit: 1
+      )
       seasons.must_be_instance_of Clashinator::ArrayResource
       seasons.items.length.wont_equal 0
       seasons.items.first.must_be_instance_of Clashinator::Season
@@ -76,19 +90,26 @@ describe Clashinator::League do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::League.league_seasons(
-          '29000022', limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          config['token_test'],
+          '29000022', limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when league_id is different than Legend League' do
-      -> { Clashinator::League.league_seasons('29000012', limit: 1) }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::League.league_seasons(
+          config['token_test'], '29000012', limit: 1
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when wrong league_id is provided' do
-      -> { Clashinator::League.league_seasons('2222222222222', limit: 1) }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::League.league_seasons(
+          config['token_test'], '2222222222222', limit: 1
+        )
+      end.must_raise RuntimeError
     end
   end
 
@@ -97,8 +118,9 @@ describe Clashinator::League do
       Clashinator::League.must_respond_to 'league_season_rankings'
     end
 
-    it 'must return an ArrayResource of ranking instances' do
+    it 'must return an ArrayResource of player ranking instances' do
       rankings = Clashinator::League.league_season_rankings(
+        config['token_test'],
         '29000022', '2015-10', limit: 1
       )
       rankings.must_be_instance_of Clashinator::ArrayResource
@@ -108,34 +130,34 @@ describe Clashinator::League do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::League.league_season_rankings(
-          '29000022', '2015-10',
-          limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          config['token_test'], '29000022', '2015-10',
+          limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when league_id is different than Legend League' do
       lambda do
-        Clashinator::League
-          .league_season_rankings('29000012', '2015-10', limit: 1)
-          .must_raise ArgumentError
-      end
+        Clashinator::League.league_season_rankings(
+          config['token_test'], '29000012', '2015-10', limit: 1
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when wrong league_id is provided' do
       lambda do
-        Clashinator::League
-          .league_season_rankings('2222222222222', '2015-10', limit: 1)
-          .must_raise ArgumentError
-      end
+        Clashinator::League.league_season_rankings(
+          config['token_test'], '2222222222222', '2015-10', limit: 1
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when wrong season_id is provided' do
       lambda do
-        Clashinator::League
-          .league_season_rankings('29000022', '2222222222222', limit: 1)
-          .must_raise ArgumentError
-      end
+        Clashinator::League.league_season_rankings(
+          config['token_test'], '29000022', '2222222222222', limit: 1
+        )
+      end.must_raise RuntimeError
     end
   end
 end

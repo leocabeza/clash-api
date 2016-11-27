@@ -5,8 +5,8 @@ module Clashinator
       super(attrs)
     end
 
-    def self.list_locations(options = {})
-      new_options = prepare_query_options(options)
+    def self.list_locations(token, options = {})
+      new_options = prepare_options(token, options)
       response = get('/v1/locations', new_options)
 
       if response.ok?
@@ -18,15 +18,16 @@ module Clashinator
       raise response['message'] unless response.ok?
     end
 
-    def self.location_info(location_id)
-      response = get("/v1/locations/#{location_id}", http_default_options)
+    def self.location_info(token, location_id)
+      new_options = prepare_options(token)
+      response = get("/v1/locations/#{location_id}", new_options)
 
       return new(response.parsed_response) if response.ok?
       raise response['message'] unless response.ok?
     end
 
-    def self.location_clan_rankings(location_id, options = {})
-      new_options = prepare_query_options(options)
+    def self.location_clan_rankings(token, location_id, options = {})
+      new_options = prepare_options(token, options)
       response = get("/v1/locations/#{location_id}/rankings/clans", new_options)
 
       if response.ok?
@@ -38,10 +39,10 @@ module Clashinator
       raise response['reason'] unless response.ok?
     end
 
-    def self.location_player_rankings(location_id, options = {})
+    def self.location_player_rankings(token, location_id, options = {})
       response = get(
         "/v1/locations/#{location_id}/rankings/players",
-        prepare_query_options(options)
+        prepare_options(token, options)
       )
 
       return Clashinator::ArrayResource.new(

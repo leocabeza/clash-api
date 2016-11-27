@@ -1,6 +1,4 @@
 require 'httparty'
-require 'cgi'
-require 'pp' # debug only
 
 require 'clashinator/base.rb'
 require 'clashinator/array_resource.rb'
@@ -19,3 +17,4 @@ require 'clashinator/location.rb'
 require 'clashinator/player.rb'
 require 'clashinator/clan.rb'
 require 'clashinator/version.rb'
+require 'clashinator/client.rb'

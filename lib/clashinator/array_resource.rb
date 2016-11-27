@@ -33,6 +33,8 @@ module Clashinator
       attr_accessor :after, :before
 
       def initialize(after, before)
+        # can't be both specified
+        # at the same time
         @after = after
         @before = before
       end

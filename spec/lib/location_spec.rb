@@ -9,7 +9,11 @@ describe Clashinator::Location do
 
   describe 'when list_locations class method exists' do
 
-    let(:locations) { Clashinator::Location.list_locations(limit: 1) }
+    let(:locations) do
+      Clashinator::Location.list_locations(
+        config['token_test'], limit: 1
+      )
+    end
 
     it 'must include a class method named list_locations' do
       Clashinator::Location.must_respond_to 'list_locations'
@@ -32,16 +36,25 @@ describe Clashinator::Location do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Location.list_locations(
-          limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          config['token_test'],
+          limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
   end
 
   describe 'when location_info class method exists' do
 
-    let(:country_location) { Clashinator::Location.location_info('32000254') }
-    let(:continent_location) { Clashinator::Location.location_info('32000002') }
+    let(:country_location) do
+      Clashinator::Location.location_info(
+        config['token_test'], '32000254'
+      )
+    end
+    let(:continent_location) do
+      Clashinator::Location.location_info(
+        config['token_test'], '32000002'
+      )
+    end
 
     it 'must include a class method named location_info' do
       Clashinator::Location.must_respond_to 'location_info'
@@ -78,8 +91,11 @@ describe Clashinator::Location do
     end
 
     it 'must raise an error when wrong location_id is provided' do
-      -> { Clashinator::Location.location_info('2222222222222') }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::Location.location_info(
+          config['token_test'], '2222222222222'
+        )
+      end.must_raise RuntimeError
     end
   end
 
@@ -90,12 +106,16 @@ describe Clashinator::Location do
     end
 
     it 'must raise an error when wrong location_id is provided' do
-      -> { Clashinator::Location.location_clan_rankings('2222222222222') }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::Location.location_clan_rankings(
+          config['token_test'], '2222222222222'
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must return an ArrayResource of ranking instances' do
       clan_rankings = Clashinator::Location.location_clan_rankings(
+        config['token_test'],
         '32000254', limit: 1
       )
       clan_rankings.must_be_instance_of Clashinator::ArrayResource
@@ -105,10 +125,11 @@ describe Clashinator::Location do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Location.location_clan_rankings(
+          config['token_test'],
           '32000254',
-          limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
   end
 
@@ -119,6 +140,7 @@ describe Clashinator::Location do
 
     it 'must return an ArrayResource of PlayerRanking instances' do
       rankings = Clashinator::Location.location_player_rankings(
+        config['token_test'],
         '32000254', limit: 1
       )
       rankings.must_be_instance_of Clashinator::ArrayResource
@@ -128,15 +150,19 @@ describe Clashinator::Location do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Location.location_player_rankings(
+          config['token_test'],
           '32000254',
-          limit: 1, after: '2938383838', before: '2938383838'
-        ).must_raise ArgumentError
-      end
+          limit: 1, after: '2938383838'
+        )
+      end.must_raise RuntimeError
     end
 
     it 'must raise an error when wrong location_id is provided' do
-      -> { Clashinator::Location.location_player_rankings('2222222222222') }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::Location.location_player_rankings(
+          config['token_test'], '2222222222222'
+        )
+      end.must_raise RuntimeError
     end
   end
 end

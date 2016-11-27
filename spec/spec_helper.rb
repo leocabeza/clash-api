@@ -1,6 +1,10 @@
 require_relative '../lib/clashinator'
 
 require 'minitest/autorun'
+
+def config
+  YAML.load_file('config/secrets.yml')
+end
 # TODO: use webmock for all tests
 # require 'webmock/minitest'
 # require 'vcr'

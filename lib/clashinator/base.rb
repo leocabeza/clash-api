@@ -10,7 +10,6 @@ module Clashinator
 
     base_uri 'https://api.clashofclans.com'
 
-    CONFIG = YAML.load_file('config/secrets.yml')
     CLASS_MAP = {
       member_list: 'Player', achievements: 'Achievement',
       troops: 'Troop', heroes: 'Hero', spells: 'Spell'
@@ -68,26 +67,28 @@ module Clashinator
       val
     end
 
-    def self.http_default_options
+    def self.http_default_options(token)
       {
         headers: {
-          'Authorization' => "Bearer #{CONFIG['token_test']}"
+          'Authorization' => "Bearer #{token}"
         }
       }
     end
 
-    def self.prepare_query_options(options)
+    def self.prepare_options(token, query_options = {})
       # new hash to store camelcased attributes, to make it work
       # with the official API
-      query_options = {}
-      options.each do |name, val|
+      new_query_options = {}
+      query_options.each do |name, val|
         name = to_camel_case(name.to_s)
         val.gsub!('#', '%23') if val.class == String
-        query_options[name.to_sym] = val
+        new_query_options[name.to_sym] = val
       end
 
-      # duplicate http_default_options to add query_options
-      http_default_options.dup.merge(query: query_options)
+      # duplicate http_default_options to add new_query_options
+      http_default_options(token).dup.merge(query: new_query_options)
     end
+
+    private_class_method :http_default_options
   end
 end

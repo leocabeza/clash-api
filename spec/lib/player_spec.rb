@@ -2,7 +2,11 @@ require_relative '../spec_helper.rb'
 
 describe Clashinator::Player do
 
-  let(:player) { Clashinator::Player.player_info('#QOCRLV90') }
+  let(:player) do
+    Clashinator::Player.player_info(
+      config['token_test'], '#QOCRLV90'
+    )
+  end
 
   describe 'when Player class exists' do
     it 'must have a Base Class parent' do
@@ -55,8 +59,11 @@ describe Clashinator::Player do
     end
 
     it 'must raise an error when wrong player_tag is provided' do
-      -> { Clashinator::Player.player_info('2222222222222') }
-        .must_raise RuntimeError
+      lambda do
+        Clashinator::Player.player_info(
+          config['token_test'], '2222222222222'
+        )
+      end.must_raise RuntimeError
     end
   end
 end
