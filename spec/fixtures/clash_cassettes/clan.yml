@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       Authorization:
-      - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6Ijc1NTNmYjBhLTAxMGQtNDk0ZS05ZmZiLTIzYTI2NmEwMTczOSIsImlhdCI6MTQ3NjU0NzcxMSwic3ViIjoiZGV2ZWxvcGVyLzAyN2YyNzdjLTNhNzUtMzA0YS01NTk2LWZkZmQ3ZGQ2ZmJhNCIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjE5MC4yNC44NS44NyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.8LSvT9AiihL_scr6KzLg-KViKRGSBvNAGFV1EV4n46IFSOK5rSGc8dorfIo4ki38AnQf0TjbLULSQiEYQ1Rz3g
+      - Bearer <API KEY>
   response:
     status:
       code: 200
