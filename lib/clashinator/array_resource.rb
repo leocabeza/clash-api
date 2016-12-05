@@ -6,14 +6,12 @@ module Clashinator
   class ArrayResource
     attr_accessor :items, :paging, :model
 
-    def initialize(model, items, paging = {})
-      # if after and before are equal, it means it's end of pagination
+    def initialize(model, items, paging = { 'cursors' => {} })
       @model = model
       @items = as_array_of_model(items)
       @paging = Clashinator::ArrayResource::Cursor.new(
-        paging['cursors']['after'],
-        paging['cursors']['before']
-      ) if paging.key?('cursors')
+        paging['cursors']
+      )
     end
 
     private def as_array_of_model(array)
@@ -27,16 +25,14 @@ module Clashinator
     end
 
     # This class represent the cursor model
-    # that contains an after & before attribute
-    # for properly paging array resources
+    # that contains an after attribute, a before attribute
+    # or neither, for properly paging array resources
     class Cursor
       attr_accessor :after, :before
 
-      def initialize(after, before)
-        # can't be both specified
-        # at the same time
-        @after = after
-        @before = before
+      def initialize(cursor_hash)
+        @after = cursor_hash['after'] if cursor_hash.key?('after')
+        @before = cursor_hash['before'] if cursor_hash.key?('before')
       end
     end
   end

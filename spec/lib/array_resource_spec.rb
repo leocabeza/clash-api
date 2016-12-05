@@ -8,16 +8,24 @@ describe Clashinator::ArrayResource do
   # HTTP request.
   # i.e: Clashinator::Clan.search_clans(
   #   name: 'vzlan warriors', limit: 1,
-  #   after: 'wrong integer param here', before: 'wrong integer param here'
+  #   after: 'wrong integer param here'
   # )
 
   let(:array_resource) do
     Clashinator::ArrayResource.new(
       Clashinator::Clan,
-      ['name' => 'Vzlan warriors', 'tag' => '#VQ2QUJG'],
+      ['name' => 'Vzlan warriors', 'limit' => 2],
       'cursors' => {
-        'after' => 'after', 'before' => 'before'
+        'after' => 'after'
       }
+    )
+  end
+
+  let(:array_resource_without_paging) do
+    Clashinator::ArrayResource.new(
+      Clashinator::Clan,
+      ['name' => 'Vzlan warriors'],
+      'cursors' => {}
     )
   end
 
@@ -36,7 +44,12 @@ describe Clashinator::ArrayResource do
         .paging
         .must_be_instance_of Clashinator::ArrayResource::Cursor
       array_resource.paging.after.must_equal 'after'
-      array_resource.paging.before.must_equal 'before'
+      array_resource.paging.before.must_be_nil
+      array_resource_without_paging
+        .paging
+        .must_be_instance_of Clashinator::ArrayResource::Cursor
+      array_resource_without_paging.paging.after.must_be_nil
+      array_resource_without_paging.paging.before.must_be_nil
     end
   end
 end
