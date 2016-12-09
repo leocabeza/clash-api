@@ -41,6 +41,16 @@ describe Clashinator::Clan do
       end.must_raise RuntimeError
     end
 
+    it 'must raise an error when name param is given' \
+      ' and have less than 3 characters' do
+      lambda do
+        Clashinator::Clan.search_clans(
+          config['token_test'],
+          name: 'ab'
+        )
+      end.must_raise RuntimeError
+    end
+
     it 'must raise an error when no query options given' do
       -> { Clashinator::Clan.search_clans }.must_raise ArgumentError
     end
