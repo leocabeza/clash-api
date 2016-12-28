@@ -5,51 +5,51 @@ module Clashinator
       super(attrs)
     end
 
-    def self.list_locations(token, options = {})
-      new_options = prepare_options(token, options)
-      response = get('/v1/locations', new_options)
+    def self.list_locations(http, options = {})
+      new_options = prepare_options(options)
+      response = http.get('/v1/locations', new_options)
+      parsed = JSON.parse(response.body)
 
-      if response.ok?
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::Location, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::Location, parsed['items'], parsed['paging']
         )
       end
-      raise response['message'] unless response.ok?
+      raise parsed['message'] unless response.success?
     end
 
-    def self.location_info(token, location_id)
-      new_options = prepare_options(token)
-      response = get("/v1/locations/#{location_id}", new_options)
+    def self.location_info(http, location_id)
+      response = http.get("/v1/locations/#{location_id}")
+      parsed = JSON.parse(response.body)
 
-      return new(response.parsed_response) if response.ok?
-      raise response['message'] unless response.ok?
+      return new(parsed) if response.success?
+      raise parsed['message'] unless response.success?
     end
 
-    def self.location_clan_rankings(token, location_id, options = {})
-      new_options = prepare_options(token, options)
-      response = get("/v1/locations/#{location_id}/rankings/clans", new_options)
+    def self.location_clan_rankings(http, location_id, options = {})
+      new_options = prepare_options(options)
+      response = http.get("/v1/locations/#{location_id}/rankings/clans", new_options)
+      parsed = JSON.parse(response.body)
 
-      if response.ok?
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::ClanRanking, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::ClanRanking, parsed['items'], parsed['paging']
         )
       end
-      raise response['reason'] unless response.ok?
+      raise parsed['reason'] unless response.success?
     end
 
-    def self.location_player_rankings(token, location_id, options = {})
-      response = get(
+    def self.location_player_rankings(http, location_id, options = {})
+      response = http.get(
         "/v1/locations/#{location_id}/rankings/players",
-        prepare_options(token, options)
+        prepare_options(options)
       )
+      parsed = JSON.parse(response.body)
 
       return Clashinator::ArrayResource.new(
-        Clashinator::PlayerRanking, response.parsed_response['items'],
-        response.parsed_response['paging']
-      ) if response.ok?
-      raise response['reason'] unless response.ok?
+        Clashinator::PlayerRanking, parsed['items'], parsed['paging']
+      ) if response.success?
+      raise parsed['reason'] unless response.success?
     end
   end
 end

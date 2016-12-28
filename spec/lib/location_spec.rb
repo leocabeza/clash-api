@@ -11,7 +11,7 @@ describe Clashinator::Location do
 
     let(:locations) do
       Clashinator::Location.list_locations(
-        config['token_test'], limit: 1
+        connection, limit: 1
       )
     end
 
@@ -36,7 +36,7 @@ describe Clashinator::Location do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Location.list_locations(
-          config['token_test'],
+          connection,
           limit: 1, after: '2938383838'
         )
       end.must_raise RuntimeError
@@ -47,12 +47,12 @@ describe Clashinator::Location do
 
     let(:country_location) do
       Clashinator::Location.location_info(
-        config['token_test'], '32000254'
+        connection, '32000254'
       )
     end
     let(:continent_location) do
       Clashinator::Location.location_info(
-        config['token_test'], '32000002'
+        connection, '32000002'
       )
     end
 
@@ -93,7 +93,7 @@ describe Clashinator::Location do
     it 'must raise an error when wrong location_id is provided' do
       lambda do
         Clashinator::Location.location_info(
-          config['token_test'], '2222222222222'
+          connection, '2222222222222'
         )
       end.must_raise RuntimeError
     end
@@ -108,14 +108,14 @@ describe Clashinator::Location do
     it 'must raise an error when wrong location_id is provided' do
       lambda do
         Clashinator::Location.location_clan_rankings(
-          config['token_test'], '2222222222222'
+          connection, '2222222222222'
         )
       end.must_raise RuntimeError
     end
 
     it 'must return an ArrayResource of ranking instances' do
       clan_rankings = Clashinator::Location.location_clan_rankings(
-        config['token_test'],
+        connection,
         '32000254', limit: 1
       )
       clan_rankings.must_be_instance_of Clashinator::ArrayResource
@@ -125,7 +125,7 @@ describe Clashinator::Location do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Location.location_clan_rankings(
-          config['token_test'],
+          connection,
           '32000254',
           limit: 1, after: '2938383838'
         )
@@ -140,7 +140,7 @@ describe Clashinator::Location do
 
     it 'must return an ArrayResource of PlayerRanking instances' do
       rankings = Clashinator::Location.location_player_rankings(
-        config['token_test'],
+        connection,
         '32000254', limit: 1
       )
       rankings.must_be_instance_of Clashinator::ArrayResource
@@ -150,7 +150,7 @@ describe Clashinator::Location do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::Location.location_player_rankings(
-          config['token_test'],
+          connection,
           '32000254',
           limit: 1, after: '2938383838'
         )
@@ -160,7 +160,7 @@ describe Clashinator::Location do
     it 'must raise an error when wrong location_id is provided' do
       lambda do
         Clashinator::Location.location_player_rankings(
-          config['token_test'], '2222222222222'
+          connection, '2222222222222'
         )
       end.must_raise RuntimeError
     end

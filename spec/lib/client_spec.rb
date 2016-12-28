@@ -2,7 +2,7 @@ require_relative '../spec_helper.rb'
 
 describe Clashinator::Client do
 
-  let(:client) { Clashinator::Client.new(config['token_test']) }
+  let(:client) { Clashinator::Client.new(secrets['token_test']) }
 
   describe 'when a token string is provided' do
     it 'must respond to default attributes' do
@@ -27,7 +27,11 @@ describe Clashinator::Client do
     end
 
     it 'must return correct values of instance methods' do
-      client.token.must_equal config['token_test']
+      client.uri.must_equal config['url']
+      client.must_respond_to 'headers'
+      client.headers.must_be_instance_of Hash
+      client.headers.key?('Authorization').must_equal true
+      client.headers['Authorization'].must_equal "Bearer #{secrets['token_test']}"
     end
   end
 

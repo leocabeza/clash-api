@@ -4,11 +4,8 @@ require_relative 'util/underscore.rb'
 module Clashinator
   # This is the base class for the other entities
   class Base
-    include HTTParty
     include Underscorable
     extend Camelizable
-
-    base_uri 'https://api.clashofclans.com'
 
     CLASS_MAP = {
       member_list: 'Player', achievements: 'Achievement',
@@ -67,15 +64,7 @@ module Clashinator
       val
     end
 
-    def self.http_default_options(token)
-      {
-        headers: {
-          'Authorization' => "Bearer #{token}"
-        }
-      }
-    end
-
-    def self.prepare_options(token, query_options = {})
+    def self.prepare_options(query_options = {})
       # new hash to store camelcased attributes, to make it work
       # with the official API
       new_query_options = {}
@@ -85,10 +74,7 @@ module Clashinator
         new_query_options[name.to_sym] = val
       end
 
-      # duplicate http_default_options to add new_query_options
-      http_default_options(token).dup.merge(query: new_query_options)
+      new_query_options
     end
-
-    private_class_method :http_default_options
   end
 end

@@ -5,60 +5,57 @@ module Clashinator
       super(attrs)
     end
 
-    def self.clan_info(token, clan_tag)
+    def self.clan_info(http, clan_tag)
       clan_tag.gsub!('#', '%23')
-      new_options = prepare_options(token)
-      response = get(
-        "/v1/clans/#{clan_tag}",
-        new_options
+      response = http.get(
+        "/v1/clans/#{clan_tag}"
       )
+      parsed = JSON.parse(response.body)
 
-      return new(response.parsed_response) if response.ok?
-      raise response['reason'] unless response.ok?
+      return new(parsed) if response.success?
+      raise parsed['reason'] unless response.success?
     end
 
-    def self.search_clans(token, options)
-      new_options = prepare_options(token, options)
-      # TODO: options[:name] should be at least 3 chars long
-      response = get('/v1/clans', new_options)
+    def self.search_clans(http, options)
+      new_options = prepare_options(options)
+      response = http.get('/v1/clans', new_options)
+      parsed = JSON.parse(response.body)
 
-      if response.ok?
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::Clan,
-          response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::Clan, parsed['items'], parsed['paging']
         )
       end
-      raise response['message'] unless response.ok?
+
+      raise parsed['message'] unless response.success?
     end
 
-    def self.list_clan_members(token, clan_tag, options = {})
-      new_options = prepare_options(token, options)
+    def self.list_clan_members(http, clan_tag, options = {})
+      new_options = prepare_options(options)
       clan_tag.gsub!('#', '%23')
-      response = get("/v1/clans/#{clan_tag}/members", new_options)
-
-      if response.ok?
+      response = http.get("/v1/clans/#{clan_tag}/members", new_options)
+      parsed = JSON.parse(response.body)
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::Player, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::Player, parsed['items'], parsed['paging']
         )
       end
-      raise response['message'] unless response.ok?
+      raise parsed['message'] unless response.success?
     end
 
-    def self.clan_war_log(token, clan_tag, options = {})
+    def self.clan_war_log(http, clan_tag, options = {})
       # response.code will be 403 if clan war log is set to private
-      new_options = prepare_options(token, options)
+      new_options = prepare_options(options)
       clan_tag.gsub!('#', '%23')
-      response = get("/v1/clans/#{clan_tag}/warlog", new_options)
+      response = http.get("/v1/clans/#{clan_tag}/warlog", new_options)
+      parsed = JSON.parse(response.body)
 
-      if response.ok?
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::Warlog, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::Warlog, parsed['items'], parsed['paging']
         )
       end
-      raise response['reason'] unless response.ok?
+      raise parsed['reason'] unless response.success?
     end
   end
 end

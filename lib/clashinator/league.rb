@@ -5,58 +5,59 @@ module Clashinator
       super(attrs)
     end
 
-    def self.list_leagues(token, options = {})
-      new_options = prepare_options(token, options)
-      response = get('/v1/leagues', new_options)
+    def self.list_leagues(http, options = {})
+      new_options = prepare_options(options)
+      response = http.get('/v1/leagues', new_options)
+      parsed = JSON.parse(response.body)
 
-      if response.ok?
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::League, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::League, parsed['items'], parsed['paging']
         )
       end
-      raise response['message'] unless response.ok?
+      raise parsed['message'] unless response.success?
     end
 
-    def self.league_info(token, league_id)
-      new_options = prepare_options(token)
-      response = get("/v1/leagues/#{league_id}", new_options)
+    def self.league_info(http, league_id)
+      response = http.get("/v1/leagues/#{league_id}")
+      parsed = JSON.parse(response.body)
 
-      return new(response.parsed_response) if response.ok?
-      raise response['message'] unless response.ok?
+      return new(parsed) if response.success?
+      raise parsed['message'] unless response.success?
     end
 
-    def self.league_seasons(token, league_id, options = {})
-      new_options = prepare_options(token, options)
-      response = get("/v1/leagues/#{league_id}/seasons", new_options)
+    def self.league_seasons(http, league_id, options = {})
+      new_options = prepare_options(options)
+      response = http.get("/v1/leagues/#{league_id}/seasons", new_options)
+      parsed = JSON.parse(response.body)
 
-      if response.ok?
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::Season, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::Season, parsed['items'], parsed['paging']
         )
       end
-      raise response['reason'] unless response.ok?
+      raise parsed['reason'] unless response.success?
     end
 
-    def self.league_season_rankings(token, league_id, season_id, options = {})
+    def self.league_season_rankings(http, league_id, season_id, options = {})
       # only available for legend_league
       response = prepare_response_season_rankings(
-        league_id, season_id, token, options
+        league_id, season_id, http, options
       )
-      if response.ok?
+      parsed = JSON.parse(response.body)
+
+      if response.success?
         return Clashinator::ArrayResource.new(
-          Clashinator::PlayerRanking, response.parsed_response['items'],
-          response.parsed_response['paging']
+          Clashinator::PlayerRanking, parsed['items'], parsed['paging']
         )
       end
-      raise response['reason'] unless response.ok?
+      raise parsed['reason'] unless response.success?
     end
 
-    def self.prepare_response_season_rankings(league_id, season_id, token, options)
-      get(
+    def self.prepare_response_season_rankings(league_id, season_id, http, options)
+      http.get(
         "/v1/leagues/#{league_id}/seasons/#{season_id}",
-        prepare_options(token, options)
+        prepare_options(options)
       )
     end
 

@@ -5,13 +5,13 @@ module Clashinator
       super(attrs)
     end
 
-    def self.player_info(token, player_tag)
+    def self.player_info(http, player_tag)
       player_tag.gsub!('#', '%23')
-      new_options = prepare_options(token)
-      response = get("/v1/players/#{player_tag}", new_options)
+      response = http.get("/v1/players/#{player_tag}")
+      parsed = JSON.parse(response.body)
 
-      return new(response.parsed_response) if response.ok?
-      raise response['reason'] unless response.ok?
+      return new(parsed) if response.success?
+      raise parsed['reason'] unless response.success?
     end
   end
 end

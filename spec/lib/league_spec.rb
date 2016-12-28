@@ -4,12 +4,12 @@ describe Clashinator::League do
 
   let(:league_ok) do
     Clashinator::League.league_info(
-      config['token_test'], '29000022'
+      connection, '29000022'
     )
   end
   let(:league_list) do
     Clashinator::League.list_leagues(
-      config['token_test'], limit: 1
+      connection, limit: 1
     )
   end
 
@@ -41,7 +41,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::League.list_leagues(
-          config['token_test'],
+          connection,
           limit: 1, after: '2938383838'
         ).must_raise ArgumentError
       end
@@ -67,7 +67,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong league_id is provided' do
       lambda do
         Clashinator::League.league_info(
-          config['token_test'], '2222222222222'
+          connection, '2222222222222'
         ).must_raise RuntimeError
       end
     end
@@ -80,7 +80,7 @@ describe Clashinator::League do
 
     it 'must return an ArrayResource of season instances' do
       seasons = Clashinator::League.league_seasons(
-        config['token_test'], '29000022', limit: 1
+        connection, '29000022', limit: 1
       )
       seasons.must_be_instance_of Clashinator::ArrayResource
       seasons.items.length.wont_equal 0
@@ -90,7 +90,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::League.league_seasons(
-          config['token_test'],
+          connection,
           '29000022', limit: 1, after: '2938383838'
         )
       end.must_raise RuntimeError
@@ -99,7 +99,7 @@ describe Clashinator::League do
     it 'must raise an error when league_id is different than Legend League' do
       lambda do
         Clashinator::League.league_seasons(
-          config['token_test'], '29000012', limit: 1
+          connection, '29000012', limit: 1
         )
       end.must_raise RuntimeError
     end
@@ -107,7 +107,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong league_id is provided' do
       lambda do
         Clashinator::League.league_seasons(
-          config['token_test'], '2222222222222', limit: 1
+          connection, '2222222222222', limit: 1
         )
       end.must_raise RuntimeError
     end
@@ -120,7 +120,7 @@ describe Clashinator::League do
 
     it 'must return an ArrayResource of player ranking instances' do
       rankings = Clashinator::League.league_season_rankings(
-        config['token_test'],
+        connection,
         '29000022', '2015-10', limit: 1
       )
       rankings.must_be_instance_of Clashinator::ArrayResource
@@ -130,7 +130,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong paging params are given' do
       lambda do
         Clashinator::League.league_season_rankings(
-          config['token_test'], '29000022', '2015-10',
+          connection, '29000022', '2015-10',
           limit: 1, after: '2938383838'
         )
       end.must_raise RuntimeError
@@ -139,7 +139,7 @@ describe Clashinator::League do
     it 'must raise an error when league_id is different than Legend League' do
       lambda do
         Clashinator::League.league_season_rankings(
-          config['token_test'], '29000012', '2015-10', limit: 1
+          connection, '29000012', '2015-10', limit: 1
         )
       end.must_raise RuntimeError
     end
@@ -147,7 +147,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong league_id is provided' do
       lambda do
         Clashinator::League.league_season_rankings(
-          config['token_test'], '2222222222222', '2015-10', limit: 1
+          connection, '2222222222222', '2015-10', limit: 1
         )
       end.must_raise RuntimeError
     end
@@ -155,7 +155,7 @@ describe Clashinator::League do
     it 'must raise an error when wrong season_id is provided' do
       lambda do
         Clashinator::League.league_season_rankings(
-          config['token_test'], '29000022', '2222222222222', limit: 1
+          connection, '29000022', '2222222222222', limit: 1
         )
       end.must_raise RuntimeError
     end

@@ -1,4 +1,6 @@
-require 'httparty'
+require 'faraday'
+require 'json'
+require 'yaml'
 
 require 'clashinator/base.rb'
 require 'clashinator/array_resource.rb'

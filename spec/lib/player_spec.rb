@@ -4,7 +4,7 @@ describe Clashinator::Player do
 
   let(:player) do
     Clashinator::Player.player_info(
-      config['token_test'], '#QOCRLV90'
+      connection, '#QOCRLV90'
     )
   end
 
@@ -61,7 +61,7 @@ describe Clashinator::Player do
     it 'must raise an error when wrong player_tag is provided' do
       lambda do
         Clashinator::Player.player_info(
-          config['token_test'], '2222222222222'
+          connection, '2222222222222'
         )
       end.must_raise RuntimeError
     end

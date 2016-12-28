@@ -37,4 +37,3 @@ Gemfile.lock
 
 # hide secrets
 secrets.yml
-spec/fixtures/*.yml
