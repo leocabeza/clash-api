@@ -44,7 +44,7 @@ module Clashinator
     end
 
     def location_clan_rankings(location_id, options = {})
-      Clashinator::Locaton.location_clan_rankings(
+      Clashinator::Location.location_clan_rankings(
         @conn, location_id, options
       )
     end
