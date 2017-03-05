@@ -37,11 +37,11 @@ There are several types of objects you can retrieve:
 ```ruby
 clans = client.search_clans(name: 'vzlan warriors', min_members: 25)
 
-clan = client.clan_info('VQ2QUJG')
+clan = client.clan_info('#VQ2QUJG')
 
-players = client.list_clan_members('VQ2QUJG')
+players = client.list_clan_members('#VQ2QUJG')
 
-war_log = client.clan_war_log('VQ2QUJG')
+war_log = client.clan_war_log('#VQ2QUJG')
 
 locations = client.list_locations
 
@@ -59,7 +59,7 @@ seasons = client.league_seasons(29000022)
 
 player_rankings = client.league_season_rankings(29000022, '2015-10')
 
-player = client.player_info('QOCRLV90')
+player = client.player_info('#QOCRLV90')
 ```
 
 ## Development
