@@ -27,11 +27,12 @@ describe Clashinator::Client do
     end
 
     it 'must return correct values of instance methods' do
-      client.uri.must_equal config['url']
+      client.uri.must_equal 'https://api.clashofclans.com'
       client.must_respond_to 'headers'
       client.headers.must_be_instance_of Hash
       client.headers.key?('Authorization').must_equal true
-      client.headers['Authorization'].must_equal "Bearer #{secrets['token_test']}"
+      client.headers['Authorization']
+            .must_equal "Bearer #{secrets['token_test']}"
     end
   end
 

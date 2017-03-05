@@ -4,17 +4,13 @@ require 'minitest/autorun'
 require 'yaml'
 require 'faraday'
 
-def config
-  YAML.load_file('config/config.yml')
-end
-
 def secrets
   YAML.load_file('config/secrets.yml')
 end
 
 def connection
   Faraday.new(
-    url: config['url'],
+    url: 'https://api.clashofclans.com',
     headers: {
       'Authorization' => "Bearer #{secrets['token_test']}"
     }

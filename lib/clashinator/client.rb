@@ -7,7 +7,7 @@ module Clashinator
 
     def initialize(token)
       @token = token
-      @uri = YAML.load_file('./config/config.yml')['url']
+      @uri = 'https://api.clashofclans.com'
       @headers = { 'Authorization' => "Bearer #{@token}" }
       @conn = Faraday.new(
         url: @uri,
